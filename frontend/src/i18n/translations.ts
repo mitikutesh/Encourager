@@ -1,4 +1,4 @@
-export type Language = 'en' | 'am'
+export type Language = 'en' | 'am' | 'fi'
 
 export interface Translations {
   amen: string
@@ -10,6 +10,8 @@ export interface Translations {
   backToBlessings: string
   fallbackVerse: string
   fallbackReference: string
+  alreadyReceived: string
+  nextBlessingAt: string
 }
 
 const en: Translations = {
@@ -22,6 +24,8 @@ const en: Translations = {
   backToBlessings: 'Back to Blessings',
   fallbackVerse: 'The Lord is good to all; he has compassion on all he has made.',
   fallbackReference: 'Psalm 145:9',
+  alreadyReceived: 'You have already received your Word for today. May it stay in your heart.',
+  nextBlessingAt: 'Next blessing available at midnight.',
 }
 
 const am: Translations = {
@@ -34,6 +38,22 @@ const am: Translations = {
   backToBlessings: 'ወደ በረከቶች ተመለስ',
   fallbackVerse: 'እግዚአብሔር ለሁሉ ቸር ነው፤ ለፍጥረቱም ሁሉ ይራራል።',
   fallbackReference: 'መዝሙር 145፥9',
+  alreadyReceived: 'የዛሬውን ቃል አስቀድመው ተቀብለዋል። በልብዎ ይኑር።',
+  nextBlessingAt: 'ቀጣይ በረከት ከእኩለ ሌሊት በኋላ ይገኛል።',
 }
 
-export const translations: Record<Language, Translations> = { en, am }
+const fi: Translations = {
+  amen: 'Aamen',
+  godBless: 'Jumala siunatkoon',
+  mayThisWord: 'Tämä sana kulkekoon kanssasi tänään.',
+  newBlessing: 'Uusi siunaus',
+  churchAdmin: 'Seurakunnan hallinta',
+  displayQrCode: 'Näytä tämä QR-koodi seurakunnallesi päivittäisen siunauksen vastaanottamiseksi.',
+  backToBlessings: 'Takaisin siunauksiin',
+  fallbackVerse: 'Herra on hyvä kaikille, hän armahtaa kaikkia luotujaan.',
+  fallbackReference: 'Psalmi 145:9',
+  alreadyReceived: 'Olet jo saanut sanasi tälle päivälle. Säilytä se sydämessäsi.',
+  nextBlessingAt: 'Seuraava siunaus on saatavilla keskiyöllä.',
+}
+
+export const translations: Record<Language, Translations> = { en, am, fi }

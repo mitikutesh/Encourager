@@ -1,12 +1,20 @@
 import { Languages } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 
+const langOrder = ['en', 'am', 'fi'] as const
+const langLabels: Record<string, string> = { en: 'EN', am: 'አማ', fi: 'FI' }
+
 export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage()
 
+  function nextLanguage() {
+    const idx = langOrder.indexOf(language)
+    setLanguage(langOrder[(idx + 1) % langOrder.length])
+  }
+
   return (
     <button
-      onClick={() => setLanguage(language === 'en' ? 'am' : 'en')}
+      onClick={nextLanguage}
       className="
         fixed top-4 right-4 z-50
         flex items-center gap-1.5 px-3 py-1.5
@@ -19,7 +27,7 @@ export default function LanguageSwitcher() {
       aria-label="Switch language"
     >
       <Languages className="w-4 h-4" />
-      {language === 'en' ? 'አማ' : 'EN'}
+      {langLabels[language]}
     </button>
   )
 }

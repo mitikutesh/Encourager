@@ -1,42 +1,111 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import VerseDisplay from '../components/VerseDisplay'
 import AmenButton from '../components/AmenButton'
 import Celebration from '../components/Celebration'
 import SuccessView from '../components/SuccessView'
+import ReflectionView from '../components/ReflectionView'
 import { useLanguage } from '../contexts/LanguageContext'
 
 interface Verse {
   text: string
   reference: string
+  index: number
+}
+
+interface BlessingData {
+  timestamp: string
+  verse: Verse
+}
+
+const STORAGE_KEY = 'last_blessing_data'
+
+function isSameDay(iso: string): boolean {
+  const saved = new Date(iso)
+  const now = new Date()
+  return (
+    saved.getFullYear() === now.getFullYear() &&
+    saved.getMonth() === now.getMonth() &&
+    saved.getDate() === now.getDate()
+  )
+}
+
+function getSavedBlessing(): BlessingData | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const data: BlessingData = JSON.parse(raw)
+    if (data.timestamp && data.verse && isSameDay(data.timestamp)) return data
+  } catch { /* ignore corrupt data */ }
+  return null
 }
 
 export default function Home() {
   const [verse, setVerse] = useState<Verse | null>(null)
   const [accepted, setAccepted] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [lockedToday, setLockedToday] = useState(false)
   const { language, t } = useLanguage()
+  const skipInitialFetch = useRef(false)
+  const savedIndex = useRef<number | null>(null)
 
-  const fetchVerse = useCallback(async () => {
-    setLoading(true)
-    setAccepted(false)
-    try {
-      const res = await fetch(`/api/verse/random?lang=${language}`)
-      const data: Verse = await res.json()
-      setVerse(data)
-    } catch {
-      setVerse({
-        text: t.fallbackVerse,
-        reference: t.fallbackReference,
-      })
-    } finally {
-      setLoading(false)
-    }
-  }, [language, t.fallbackVerse, t.fallbackReference])
-
+  // On mount: check if the user already blessed today
   useEffect(() => {
-    fetchVerse()
-  }, [fetchVerse])
+    const saved = getSavedBlessing()
+    if (saved) {
+      setVerse(saved.verse)
+      savedIndex.current = saved.verse.index
+      setLockedToday(true)
+      setLoading(false)
+      skipInitialFetch.current = true
+    }
+  }, [])
+
+  // Fetch a verse on mount (if not locked) and whenever language changes
+  useEffect(() => {
+    // Skip the very first run if we loaded a verse from storage
+    if (skipInitialFetch.current) {
+      skipInitialFetch.current = false
+      return
+    }
+
+    // When locked, re-fetch the SAME verse (by index) in the new language
+    if (lockedToday && savedIndex.current !== null) {
+      fetch(`/api/verse/random?lang=${language}&index=${savedIndex.current}`)
+        .then(res => res.json())
+        .then((data: Verse) => setVerse(data))
+        .catch(() => {})
+      return
+    }
+
+    // Normal mode: show loading spinner while fetching a random verse
+    setLoading(true)
+    fetch(`/api/verse/random?lang=${language}`)
+      .then(res => res.json())
+      .then((data: Verse) => setVerse(data))
+      .catch(() => setVerse({ text: t.fallbackVerse, reference: t.fallbackReference, index: -1 }))
+      .finally(() => setLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language])
+
+  function handleAmen() {
+    if (!verse) return
+    const data: BlessingData = { timestamp: new Date().toISOString(), verse }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    savedIndex.current = verse.index
+    setLockedToday(true)
+    setAccepted(true)
+  }
+
+  function handleNext() {
+    setAccepted(false)
+    // lockedToday is already true from handleAmen → will render ReflectionView
+  }
+
+  // Reflection screen — user already blessed today
+  if (lockedToday && !accepted) {
+    return verse ? <ReflectionView verse={verse} /> : null
+  }
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-6 py-12 bg-gradient-to-br from-slate-50 to-blue-50 font-sans">
@@ -58,10 +127,10 @@ export default function Home() {
               )
             )}
 
-            <AmenButton onClick={() => setAccepted(true)} disabled={loading} />
+            <AmenButton onClick={handleAmen} disabled={loading} />
           </div>
         ) : (
-          <SuccessView key="success" onNext={fetchVerse} />
+          <SuccessView key="success" onNext={handleNext} />
         )}
       </AnimatePresence>
     </div>
