@@ -62,10 +62,9 @@ Create a component to prompt users to install the PWA. See the original `pwa-imp
 
 ## Branding Alignment
 
-- **Theme Color:** `#1a374f` (Primary Deep Navy)
-- **Background Color:** `#fdfbca` (Cream)
-- **Display Mode:** `standalone` - removes browser UI for app-like experience
-- **Orientation:** `portrait` - optimized for mobile-first QR scanning use case
+See `context/branding.md` for the full color palette. Key PWA values:
+- **Display Mode:** `standalone` — removes browser UI for app-like experience
+- **Orientation:** `portrait` — optimized for mobile-first QR scanning use case
 
 ## Expected Result
 

@@ -128,9 +128,13 @@ dotnet test --verbosity normal              # verbose output
 Detailed guides live in `Agents/` — see `Agents/README.md` for index:
 - `Agents/rules/coding-standards.md` — code style
 - `Agents/rules/unit-testing.md` — test patterns and builder usage
-- `Agents/rules/auto-documentation.md` ⭐ **MANDATORY** — automatic documentation updates with code changes
+- `Agents/rules/auto-documentation.md` ⭐ **MANDATORY** — documentation standards and automatic updates with code changes
 - `Agents/context/branding.md` — ECCFIN brand colors and UI guidelines
 - `Agents/guides/daily-blessing-rule.md` — one-blessing-per-day implementation details
+- `Agents/guides/backend-setup.md` — .NET 10 API setup and structure
+- `Agents/guides/frontend-setup.md` — React 19 setup and component structure
+- `Agents/guides/pwa-implementation.md` — Progressive Web App setup
+- `Agents/guides/admin-qr-generator.md` — QR code generation for admin
 
 ### Important: Auto-Documentation Rule
 

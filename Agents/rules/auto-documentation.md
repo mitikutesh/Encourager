@@ -6,6 +6,25 @@
 
 Documentation updates are NOT optional—they are part of the code change itself.
 
+## Documentation Standards
+
+### Directory Organization
+- All documentation files must be saved in the `/docs` directory
+- Architecture diagrams must be saved in `/docs/architecture/`
+- Use kebab-case for file names
+- Keep documentation organized by topic/feature
+
+### Markdown Standards
+- Use standard Markdown syntax
+- Follow consistent heading hierarchy
+- Use code blocks for code examples
+- Include links to related documentation
+
+### Maintenance
+- Maintain `docs/_Sidebar.md` for GitHub Wiki navigation
+- Keep documentation synchronized with code changes
+- Review and update documentation during code reviews
+
 ## When to Update Documentation
 
 ### Always Update Documentation When:

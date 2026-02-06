@@ -1,7 +1,7 @@
 # Sidebar Navigation
 
 ## Home
-- [Home](../Home.md)
+- [Home](./index.md)
 
 ## Architecture
 - [System Architecture](./architecture/system-architecture.md)
@@ -19,5 +19,6 @@
 - [API Reference](./developer/api-reference.md)
 - [Development Workflows](./developer/development-workflows.md)
 - [Testing Guidelines](./developer/testing-guidelines.md)
+- [PWA Testing](./developer/pwa-testing.md)
 - [Deployment](./developer/deployment.md)
 - [Contributing](./developer/contributing.md)

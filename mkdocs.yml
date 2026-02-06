@@ -46,6 +46,7 @@ nav:
     - developer/api-reference.md
     - developer/development-workflows.md
     - developer/testing-guidelines.md
+    - developer/pwa-testing.md
     - developer/deployment.md
     - developer/contributing.md
 

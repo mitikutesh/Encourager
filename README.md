@@ -305,6 +305,44 @@ docker compose down
 - Run `dotnet restore` in the solution root
 - Check that all dependencies are restored
 
+## Documentation
+
+The project documentation is built with MkDocs and Material theme. Documentation is automatically deployed to GitHub Pages when changes are pushed to `docs/` or `mkdocs.yml`.
+
+### Running Documentation Locally
+
+To preview the documentation locally:
+
+```bash
+# Install dependencies (first time only)
+pip install -r requirements.txt
+
+# Start the development server
+python3 -m mkdocs serve
+```
+
+The documentation will be available at `http://localhost:8000`.
+
+**Note**: If the `mkdocs` command is not found, use `python3 -m mkdocs` instead. This is common if MkDocs was installed via pip without adding the bin directory to your PATH.
+
+### Building Documentation
+
+To build the documentation site:
+
+```bash
+python3 -m mkdocs build
+```
+
+The built site will be in the `site/` directory (which is gitignored).
+
+### Documentation Structure
+
+- **User Documentation**: `docs/user/` - Guides for end users
+- **Developer Documentation**: `docs/developer/` - Setup, API reference, workflows, testing
+- **Architecture Documentation**: `docs/architecture/` - System design, data flow, deployment
+
+Documentation is published at: https://mitikutesh.github.io/Encourager
+
 ## Publishing to AWS
 
 ### Initial AWS Setup
