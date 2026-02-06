@@ -1,0 +1,20 @@
+# NOTE: Verify that .NET 10 Lambda base images are GA and available.
+# If .NET 10 is still in preview, these images may not exist on public ECR.
+# Pin to a specific image digest for reproducibility in production.
+FROM public.ecr.aws/lambda/dotnet:10 AS base
+WORKDIR /var/task
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY ["Encourager.Api.csproj", "./"]
+RUN dotnet restore "Encourager.Api.csproj"
+COPY . .
+RUN dotnet build "Encourager.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Encourager.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /var/task
+COPY --from=publish /app/publish .
+CMD ["Encourager.Api::Encourager.Api.LambdaEntryPoint::FunctionHandlerAsync"]

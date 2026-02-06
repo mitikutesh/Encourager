@@ -1,2 +1,10 @@
 bin/
 obj/
+.vs/
+.idea/
+*.user
+*.suo
+*.md
+.git/
+.gitignore
+.dockerignore
