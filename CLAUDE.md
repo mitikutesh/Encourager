@@ -41,27 +41,43 @@ E2E tests expect the app running at `http://localhost:4000` (Docker Compose).
 
 ### Backend Unit Tests
 ```bash
-dotnet test tests/Encourager.Api.Tests/
+dotnet test                                  # run all tests
+dotnet test tests/Encourager.Api.Tests/     # run specific project tests
+dotnet test --filter "FullyQualifiedName~GetRandomVerse"  # run single test
+dotnet test --verbosity normal              # verbose output
 ```
 
 ## Architecture
 
 **Monorepo** with three top-level directories: `backend/`, `frontend/`, `infrastructure/`.
 
-### Backend
-- Dual entry points: `Program.cs` (local dev) and `LambdaEntryPoint.cs` (AWS Lambda)
-- `AppConfiguration.cs` is the shared setup — registers DI services and maps endpoints, used by both entry points
-- `VerseService` (singleton) serves verses from static in-memory data classes (`EnglishVerses`, `AmharicVerses`, `FinnishVerses`)
-- API: `GET /api/verse/random?lang=en&index=0`, `GET /api/health`
-- CORS origin controlled by `ALLOWED_ORIGIN` env var (defaults to `*`)
+### Backend (.NET 10 Minimal APIs)
+- **Dual entry points** with shared configuration:
+  - `Program.cs` — Kestrel web server for local development
+  - `LambdaEntryPoint.cs` — AWS Lambda container entry point
+  - `AppConfiguration.cs` — shared DI service registration and endpoint mapping used by both
+- **VerseService** (singleton):
+  - Serves verses from static in-memory data classes: `EnglishVerses`, `AmharicVerses`, `FinnishVerses`
+  - Each data class contains ~50 verses with `Text`, `Reference`, and `Index` properties
+  - `GetRandom(lang)` returns random verse; `GetByIndex(lang, index)` returns specific verse
+- **API Endpoints**:
+  - `GET /api/verse/random?lang={en|am|fi}&index={0-49}` — random or indexed verse
+  - `GET /api/health` — health check with timestamp
+- **CORS**: Controlled by `ALLOWED_ORIGIN` env var (defaults to `*`, restrict in production)
 
-### Frontend
-- React 19 + TypeScript strict mode, Vite 7, Tailwind CSS 4
-- `LanguageContext` (React Context) manages global language state, persisted to localStorage
-- React Router v7 with two routes: `/` (Home) and `/admin` (QR code generator)
-- Framer Motion for animations, canvas-confetti for celebration effects
-- PWA via vite-plugin-pwa with Workbox (network-first for API, cache-first for static assets)
-- Daily blessing state tracked in localStorage key `last_blessing_data`
+### Frontend (React 19 + Vite + Tailwind CSS 4)
+- **TypeScript**: Strict mode enabled, no `any` types allowed
+- **State Management**:
+  - `LanguageContext` — global language state (en/am/fi), persisted to `localStorage.lang`
+  - Daily blessing state in `localStorage.last_blessing_data`: `{ timestamp: ISO8601, verse: { text, reference, index } }`
+  - Blessing locks after "Amen" click until midnight; date comparison checks year-month-day match
+- **Routing**: React Router v7 with two routes:
+  - `/` — Home page (verse display, Amen button, reflection view if already blessed today)
+  - `/admin` — QR code generator (not linked in UI, admin access only)
+- **Animations**: Framer Motion for verse transitions, canvas-confetti for celebration on "Amen"
+- **PWA**: vite-plugin-pwa with Workbox strategies:
+  - Network-first for `/api/*` routes (fresh data, fallback to cache)
+  - Cache-first for static assets (CSS, JS, images)
 
 ### Infrastructure (AWS)
 - SAM template at `infrastructure/template.yaml`
@@ -95,9 +111,17 @@ dotnet test tests/Encourager.Api.Tests/
 
 ## Key Business Rules
 
-- **One blessing per day**: Verse locks after user clicks "Amen". Stored in localStorage with timestamp. Next day resets automatically.
+- **One blessing per day**:
+  - Verse locks after user clicks "Amen" (not on page load — allows reading without commitment)
+  - Stored in `localStorage.last_blessing_data` with ISO timestamp and verse data
+  - Date comparison checks year-month-day equality with current date
+  - If already blessed today: show "reflection view" with saved verse and countdown to midnight
+  - Resets automatically at midnight (local time)
 - **Three languages**: English (en), Amharic (am), Finnish (fi). Always test all three when modifying verse display or API.
-- **PWA**: App works offline. Service worker uses network-first for `/api/*`, cache-first for static assets.
+- **PWA Offline Support**:
+  - Service worker caches API responses (5 min TTL) and static assets
+  - App shell loads immediately, verses load from cache if offline
+  - Install prompt available on supported browsers
 
 ## Agent Documentation
 
