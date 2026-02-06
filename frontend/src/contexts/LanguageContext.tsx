@@ -1,13 +1,9 @@
-import { createContext, useState, type ReactNode } from 'react'
-import { translations, type Language, type Translations } from '../i18n/translations'
+import { useState, type ReactNode } from 'react'
+import { translations, type Language } from '../i18n/translations'
+import { LanguageContext } from './languageContextValue'
 
-export interface LanguageContextValue {
-  language: Language
-  setLanguage: (lang: Language) => void
-  t: Translations
-}
-
-export const LanguageContext = createContext<LanguageContextValue | null>(null)
+export type { LanguageContextValue } from './languageContextValue'
+export { LanguageContext } from './languageContextValue'
 
 function getInitialLanguage(): Language {
   const stored = localStorage.getItem('lang')
