@@ -128,5 +128,14 @@ dotnet test --verbosity normal              # verbose output
 Detailed guides live in `Agents/` — see `Agents/README.md` for index:
 - `Agents/rules/coding-standards.md` — code style
 - `Agents/rules/unit-testing.md` — test patterns and builder usage
+- `Agents/rules/auto-documentation.md` ⭐ **MANDATORY** — automatic documentation updates with code changes
 - `Agents/context/branding.md` — ECCFIN brand colors and UI guidelines
 - `Agents/guides/daily-blessing-rule.md` — one-blessing-per-day implementation details
+
+### Important: Auto-Documentation Rule
+
+**When making ANY code changes, you MUST automatically update relevant documentation files and include those updates in the SAME commit.** See `Agents/rules/auto-documentation.md` for:
+- Code-to-documentation mapping tables
+- Step-by-step update instructions
+- Mermaid diagram update guidelines
+- Commit message format requirements

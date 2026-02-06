@@ -8,6 +8,7 @@ For detailed instructions, see:
 - **Coding Standards:** `Agents/rules/coding-standards.md`
 - **Unit Testing:** `Agents/rules/unit-testing.md`
 - **Documentation:** `Agents/rules/documentation.md`
+- **Auto Documentation:** `Agents/rules/auto-documentation.md` ⭐ **MANDATORY**
 - **Project Context:** `Agents/context/project-overview.md`
 - **Branding:** `Agents/context/branding.md`
 

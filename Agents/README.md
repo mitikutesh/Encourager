@@ -8,6 +8,7 @@ This directory contains organized instructions, rules, and guides for AI agents 
 Agents/
 ├── README.md              # This file - main index
 ├── rules/                 # Coding standards and rules
+│   ├── auto-documentation.md
 │   ├── coding-standards.md
 │   ├── documentation.md
 │   └── unit-testing.md
@@ -28,6 +29,7 @@ Agents/
 - **[Coding Standards](rules/coding-standards.md)** - General coding practices for .NET and React
 - **[Unit Testing Rules](rules/unit-testing.md)** - Test structure, naming, and patterns
 - **[Documentation Rules](rules/documentation.md)** - Documentation standards and architecture diagrams
+- **[Auto Documentation](rules/auto-documentation.md)** ⭐ **MANDATORY** - Automatic documentation updates with code changes
 
 ### For Implementation Guides
 - **[Backend Setup](guides/backend-setup.md)** - .NET 10 API setup and structure
