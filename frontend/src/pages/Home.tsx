@@ -69,16 +69,17 @@ export default function Home() {
       return
     }
 
-    // When locked, re-fetch the SAME verse (by index) in the new language
-    if (lockedToday && savedIndex.current !== null) {
-      fetch(`/api/verse/random?lang=${language}&index=${savedIndex.current}`)
+    // If a verse is already displayed, re-fetch the SAME verse (by index) in the new language
+    const currentIndex = savedIndex.current ?? verse?.index
+    if (currentIndex !== undefined && currentIndex !== null && currentIndex >= 0) {
+      fetch(`/api/verse/random?lang=${language}&index=${currentIndex}`)
         .then(res => res.json())
         .then((data: Verse) => setVerse(data))
         .catch(() => {})
       return
     }
 
-    // Normal mode: show loading spinner while fetching a random verse
+    // Initial load: fetch a random verse
     setLoading(true)
     fetch(`/api/verse/random?lang=${language}`)
       .then(res => res.json())
